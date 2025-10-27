@@ -1,11 +1,12 @@
 R Notebook
 ================
 
-Chargement du package dada2 \# Ce package est utilisé pour l’analyse de
-séquences d’ADN issues du séquençage haut débit (NGS), \#dans ce
-tutoriel ce pour les gène 16S \# Il permet de filtrer, corriger,
-assembler et classifier les séquences afin d’obtenir des ASVs. \#
-Chargement du package dada2
+Chargement du package dada2 \# Ce package est utilisé pour analyser les
+séquences d’ADN issues du séquençage haut débit (NGS), \# notamment
+celles du gène 16S dans ce travail. Il permet de filtrer, corriger,
+assembler \# et classifier les séquences afin d’obtenir des ASVs
+(Amplicon Sequence Variants) \# avec une meilleure précision que les
+méthodes traditionnelles. \# Chargement du package dada2
 
 ``` r
 library(dada2)
@@ -99,7 +100,13 @@ fnRs <- sort(list.files(path, pattern="_R2_001.fastq", full.names = TRUE))
 sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
 ```
 
-# Affichage des profils de qualité pour les 2 premiers fichiers forward
+# Visualisation des profils de qualité des lectures Forward
+
+# Ici, on affiche les graphiques de qualité pour les deux premiers fichiers FASTQ “Forward”.
+
+# Cette analyse permet de comparer la dégradation de la qualité en fin de lecture
+
+# et d’ajuster les paramètres de trimming en conséquence.
 
 ``` r
 plotQualityProfile(fnFs[1:2])
@@ -107,7 +114,13 @@ plotQualityProfile(fnFs[1:2])
 
 ![](osman-dada2_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-# Affichage des profils de qualité pour les 2 premiers fichiers reverse
+# Visualisation des profils de qualité des lectures Reverse
+
+# Comme pour les reads Forward, on inspecte ici la qualité des deux premiers fichiers FASTQ “Reverse”.
+
+# Cette analyse permet de comparer la dégradation de la qualité en fin de lecture
+
+# et d’ajuster les paramètres de trimming en conséquence.
 
 ``` r
 plotQualityProfile(fnRs[1:2])
@@ -117,7 +130,7 @@ plotQualityProfile(fnRs[1:2])
 Création des chemins de sortie pour les fichiers filtrés (lectures
 forward) \# On utilise file.path() pour faire un chemin complet : \# -
 “path” = dossier principal (~/MiSeq_SOP) \# - “filtered” = sous-dossier
-où seront stockés les fichiers filtrés \# - paste0() le nom de
+où seront stockés l es fichiers filtrés \# - paste0() le nom de
 l’échantillon avec le suffixe “\_F_filt.fastq.gz” \# meme chose pour les
 lectures reverse (R2), suffixe “\_R_filt.fastq.gz” \# On associe chaque
 fichier forward filtré à son nom d’échantillon names(filtFs) \<-
@@ -160,7 +173,11 @@ head(out)
     ## F3D143_S209_L001_R1_001.fastq     3178      2941
     ## F3D144_S210_L001_R1_001.fastq     4827      4312
 
-# Apprentissage du modèle d’erreur sur les lectures forward filtrées
+# Apprentissage du modèle d’erreurs pour les lectures Forward filtrées
+
+# Cette étape permet à dada2 d’estimer les profils d’erreurs propres aux données,
+
+# afin de distinguer les erreurs de séquençage des variations biologiques réelles.
 
 ``` r
 errF <- learnErrors(filtFs, multithread=TRUE)
@@ -168,7 +185,11 @@ errF <- learnErrors(filtFs, multithread=TRUE)
 
     ## 33514080 total bases in 139642 reads from 20 samples will be used for learning the error rates.
 
-# Apprentissage du profil d’erreurs pour les reads reverse filtrés
+# Apprentissage du modèle d’erreurs pour les lectures Reverse filtrées
+
+# Comme pour les reads Forward, dada2 estime ici les erreurs spécifiques aux données Reverse,
+
+# ce qui permettra une correction plus fiable des séquences lors de l’inférence des ASVs.
 
 ``` r
 errR <- learnErrors(filtRs, multithread=TRUE)
@@ -176,7 +197,11 @@ errR <- learnErrors(filtRs, multithread=TRUE)
 
     ## 22342720 total bases in 139642 reads from 20 samples will be used for learning the error rates.
 
-# Affichage du modèle d’erreurs pour les reads forward
+# Visualisation du modèle d’erreurs des lectures Forward
+
+# Cette représentation permet de vérifier si le modèle d’erreur estimé
+
+# correspond bien aux tendances attendues (en fonction des scores de qualité).
 
 ``` r
 plotErrors(errF, nominalQ=TRUE)
@@ -187,10 +212,13 @@ plotErrors(errF, nominalQ=TRUE)
 
 ![](osman-dada2_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
-# Inférence des variants de séquences exactes (ASVs) sur les fichiers forward
+# Inférence des variants de séquences exactes (ASVs) à partir des lectures Forward filtrées
 
-\#Cela te dit combien de lectures ont été conservées et combien de
-variants uniques (ASVs) ont été trouvés
+# Cette étape applique le modèle d’erreurs pour corriger les séquences et identifier
+
+# les variants uniques réels. Le résultat indique notamment le nombre de lectures conservées
+
+# et le nombre d’ASVs détectés.
 
 ``` r
 dadaFs <- dada(filtFs, err=errF, multithread=TRUE)
@@ -217,10 +245,11 @@ dadaFs <- dada(filtFs, err=errF, multithread=TRUE)
     ## Sample 19 - 6504 reads in 1709 unique sequences.
     ## Sample 20 - 4314 reads in 897 unique sequences.
 
-# Inférence des variants de séquences exactes (ASVs) sur les fichiers reverse
+# Inférence des variants de séquences exactes (ASVs) à partir des lectures Reverse filtrées
 
-\#Cela te dit combien de lectures ont été conservées et combien de
-variants uniques (ASVs) ont été trouvés
+# Comme pour les séquences Forward, le modèle d’erreurs est utilisé ici pour corriger
+
+# les lectures Reverse et identifier les ASVs réellement présents dans l’échantillon.
 
 ``` r
 dadaRs <- dada(filtRs, err=errR, multithread=TRUE)
@@ -247,8 +276,11 @@ dadaRs <- dada(filtRs, err=errR, multithread=TRUE)
     ## Sample 19 - 6504 reads in 1502 unique sequences.
     ## Sample 20 - 4314 reads in 732 unique sequences.
 
-\#Utiles pour un aperçu global nombre d’uniques (ASVs “bruts”) par
-échantillon
+# Consultation du résultat pour le premier échantillon
+
+# Utile pour obtenir un aperçu du nombre de séquences uniques (ASVs “bruts”)
+
+# identifiées dans cet échantillon avant la fusion des lectures.
 
 ``` r
 dadaFs[[1]]
@@ -258,10 +290,13 @@ dadaFs[[1]]
     ## 128 sequence variants were inferred from 1979 input unique sequences.
     ## Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16
 
-# Fusion des lectures forward et reverse (R1 et R2)
+# Fusion des lectures Forward et Reverse (R1 et R2)
 
-\#Affiche les premières lignes du tableau de résultats pour le 1er
-échantillon
+# Cette étape assemble les paires de lectures qui se chevauchent afin de reconstruire
+
+# la séquence complète de l’amplicon. On affiche ici les premières lignes du résultat
+
+# correspondant au premier échantillon pour vérifier la qualité de la fusion.
 
 ``` r
 mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE)
@@ -327,12 +362,13 @@ head(mergers[[1]])
     ## 5       345       5       6    148         0      0      1   TRUE
     ## 6       282       6       5    148         0      0      2   TRUE
 
-# Construction de la table de séquences (ASV table)
+# Construction de la table des variants de séquences (ASV table)
 
-# Dimensions de la table (nb d’échantillons x nb d’ASVs)
+# Cette matrice contient, pour chaque échantillon, le nombre de lectures
 
-\#Prend en entrée les résultats de mergePairs() (séquences fusionnées
-par échantillon)
+# correspondant à chaque ASV obtenu après fusion des lectures.
+
+# Affichage des dimensions de la table : nombre d’échantillons x nombre d’ASVs
 
 ``` r
 seqtab <- makeSequenceTable(mergers)
@@ -343,8 +379,9 @@ dim(seqtab)
 
 # Vérification de la distribution des longueurs des séquences (ASVs)
 
-\#construit une table de fréquence indiquant combien d’ASVs ont telle ou
-telle longueur.
+# Cette commande génère une table de fréquence indiquant combien d’ASVs correspondent à chaque longueur de séquence, Cela permet de repérer
+
+# d’éventuelles séquences aberrantes avant la suite du traitement.
 
 ``` r
 # Inspect distribution of sequence lengths
@@ -379,8 +416,9 @@ dim(seqtab.nochim)
 
 # Calcul de la proportion de lectures non chimériques
 
-\#omme de toutes les lectures dans ta table avant suppression des
-chimères. \#donne donc la fraction de lectures conservées.
+# On compare le nombre total de lectures après suppression des chimères
+
+# au nombre total initial, afin d’évaluer la fraction de données réellement conservées.
 
 ``` r
 sum(seqtab.nochim)/sum(seqtab)
@@ -420,11 +458,17 @@ head(track)
     ## F3D143  3178     2941      2822      2868   2553    2519
     ## F3D144  4827     4312      4151      4228   3646    3507
 
-\#Création d’un dossier “tax” dans ton répertoire utilisateur (home
-directory) \# C’est ici que j’ai stocké les fichiers de référence
-nécessaires à l’assignation taxonomique \# Téléchargement du jeu
-d’entraînement Silva v132 (classification des taxons jusqu’au genre) \#
-Téléchargement du fichier d’assignation au niveau espèce (Silva v132)
+# Création d’un dossier “tax” dans le répertoire utilisateur (home directory)
+
+# Ce dossier contiendra les fichiers de référence nécessaires à l’assignation taxonomique.
+
+# Téléchargement / mise en place du jeu de référence Silva v132
+
+## Base qui permet l’assignation taxonomique jusqu’au niveau du genre (assignTaxonomy)
+
+# Téléchargement du fichier complémentaire Silva v132
+
+## Utilisé pour l’assignation jusqu’au niveau espèce lorsque cela est possible (addSpecies)
 
 ``` r
 dir.create("~/tax", showWarnings=FALSE)
@@ -445,26 +489,33 @@ download.file("https://zenodo.org/records/1172783/files/silva_species_assignment
     ## download.file("https://zenodo.org/records/1172783/files/silva_species_assignment_v132.fa.gz",
     ## : download had nonzero exit status
 
-# Assignation taxonomique des ASVs avec la base de référence SILVA v132
+# Assignation taxonomique des ASVs à partir de la base de référence SILVA v132
+
+# Cette étape associe à chaque ASV une classification taxonomique
+
+# du niveau Domaine jusqu’au Genre (selon le degré de similarité des séquences).
 
 ``` r
 taxa <- assignTaxonomy(seqtab.nochim, "~/tax/silva_nr_v132_train_set.fa.gz", multithread=TRUE)
 ```
 
-# Ajout de l’assignation au niveau espèce à la matrice taxonomique
+# Ajout de l’assignation taxonomique au niveau espèce
 
-\#Ici je lui donnes le fichier silva_species_assignment_v132.fa.gz qui
-contient des séquences de référence au niveau espèce.
+# On utilise ici le fichier de référence “silva_species_assignment_v132.fa.gz”
+
+# contenant des séquences annotées au niveau espèce, afin de compléter
+
+# la classification taxonomique lorsque cela est possible.
 
 ``` r
 taxa <- addSpecies(taxa, "~/silva_species_assignment_v132.fa.gz")
 ```
 
-# Copie de l’objet taxa pour l’affichage
+# Préparation d’une version affichable de la table taxonomique
 
-# Suppression des noms de lignes (qui sont par défaut les séquences ASV)
+# On supprime les noms de lignes (séquences ASVs) pour faciliter la lecture
 
-# cette commande m’a permis d’afficher un aperçu lisible de ta taxonomie sans les séquences en guise de noms.
+# et afficher un aperçu clair des classifications taxonomiques obtenues.
 
 ``` r
 taxa.print <- taxa # Removing sequence rownames for display only
@@ -487,12 +538,17 @@ head(taxa.print)
     ## [5,] "Bacteroides" NA     
     ## [6,] NA            NA
 
-# Chargement du package DECIPHE
+# Chargement du package DECIPHER
 
-# Vérification de la version installée
+# Ce package est dédié à l’analyse de séquences ADN/ARN, notamment pour l’alignement
 
-packageVersion(“DECIPHER”) \#Charge le package DECIPHER, développé pour
-l’analyse de séquences d’ADN/ARN
+# multiple, l’identification fonctionnelle et d’autres analyses bio-informatiques avancées.
+
+library(DECIPHER)
+
+# Vérification de la version installée du package
+
+packageVersion(“DECIPHER”)
 
 ``` r
 library(DECIPHER); packageVersion("DECIPHER")
@@ -552,16 +608,42 @@ library(DECIPHER); packageVersion("DECIPHER")
 
     ## [1] '2.28.0'
 
-# Crée un objet de séquences ADN à partir des ASVs (colonnes de seqtab.nochim)
+# Création d’un objet contenant les séquences ASVs au format DNAStringSet
 
-# Charge le jeu d’entraînement DECIPHER (SILVA) depuis un fichier .RData local
+dna \<- DNAStringSet(getSequences(seqtab.nochim))
 
-# Définition des rangs taxonomiques qui t’intéressent
+# Chargement du jeu de référence DECIPHER (SILVA R138.2)
+
+# Ce fichier .RData contient le modèle d’apprentissage nécessaire pour l’assignation taxonomique.
+
+load(“~/SILVA_SSU_r138_2_2024.RData”) \# À adapter selon l’emplacement
+du fichier
+
+# Assignation taxonomique via DECIPHER (IdTaxa)
+
+# Utilisation du brin “top” et de l’ensemble des processeurs disponibles
+
+ids \<- IdTaxa(dna, trainingSet, strand = “top”, processors = NULL,
+verbose = TRUE)
+
+# Définition des rangs taxonomiques d’intérêt pour la sortie finale
 
 ranks \<- c(“domain”, “phylum”, “class”, “order”, “family”, “genus”,
-“species”) \# Convertit la liste d’objets ‘Taxa’ (renvoyée par IdTaxa)
-en matrice \# Nomme les colonnes par les rangs et les lignes par les
-séquences ASV (nucleotidiques)
+“species”)
+
+# Conversion du résultat (objet de classe “Taxa”) en matrice taxonomique,
+
+# structurée comme celle issue de assignTaxonomy()
+
+\##Les annotations “unclassified\_…” sont remplacées par NA pour plus de
+clarté taxid \<- t(sapply(ids, function(x) { m \<- match(ranks,
+x$rank)  taxa <- x$taxon\[m\] taxa\[startsWith(taxa, “unclassified\_”)\]
+\<- NA taxa }))
+
+# Attribution des noms de colonnes et des ASVs comme noms de lignes
+
+colnames(taxid) \<- ranks rownames(taxid) \<-
+getSequences(seqtab.nochim)
 
 ``` r
 dna <- DNAStringSet(getSequences(seqtab.nochim)) # Create a DNAStringSet from the ASVs
@@ -571,7 +653,7 @@ ids <- IdTaxa(dna, trainingSet, strand="top", processors=NULL, verbose=TRUE) # u
 
     ## ================================================================================
     ## 
-    ## Time difference of 147.23 secs
+    ## Time difference of 121.14 secs
 
 ``` r
 ranks <- c("domain", "phylum", "class", "order", "family", "genus", "species") # ranks of interest
@@ -587,14 +669,15 @@ colnames(taxid) <- ranks; rownames(taxid) <- getSequences(seqtab.nochim)
 
 # Sélection des ASVs présents dans l’échantillon “Mock”
 
-# On garde uniquement les ASVs avec une abondance \> 0
+# On conserve uniquement les ASVs avec une abondance \> 0,
 
-# puis on les trie par abondance décroissante
+# puis on les trie par abondance décroissante.
 
-# Affiche combien d’ASVs DADA2 a inféré dans le Mock community
+# Affichage du nombre total d’ASVs détectés dans le Mock community.
 
-\#Dans un Mock community, on connaît le nombre d’espèces (ex. 20 dans
-mon cas).
+# Dans un Mock, le nombre d’espèces attendues est connu (ex. ~20 ici),
+
+# ce qui permet d’évaluer la performance du pipeline.
 
 ``` r
 unqs.mock <- seqtab.nochim["Mock",]
@@ -604,15 +687,17 @@ cat("DADA2 inferred", length(unqs.mock), "sample sequences present in the Mock c
 
     ## DADA2 inferred 20 sample sequences present in the Mock community.
 
-# Charge les séquences de référence attendues pour le Mock community
+# Chargement des séquences de référence du Mock community
 
-# Le fichier “HMP_MOCK.v35.fasta” contient les séquences 16S des espèces connues
+# Le fichier “HMP_MOCK.v35.fasta” contient les séquences 16S des espèces connues du Mock,
 
-# Vérifie si chaque ASV trouvé dans le Mock correspond à une séquence de référence attendue
+# servant ici de jeu de référence pour évaluer la précision de l’analyse.
 
-# Affiche combien d’ASVs correspondent exactement aux séquences de référence
+# Vérification de la concordance entre les ASVs détectés et les séquences attendues
 
-\#Ça permet de vérifier la précision de DADA2
+# On teste pour chaque ASV du Mock si une correspondance exacte existe dans les références.
+
+# Affichage du nombre d’ASVs correspondant parfaitement au jeu d’espèces attendu
 
 ``` r
 mock.ref <- getSequences(file.path(path, "HMP_MOCK.v35.fasta"))
@@ -709,15 +794,15 @@ samdf$When[samdf$Day>100] <- "Late"
 rownames(samdf) <- samples.out
 ```
 
-# Création de l’objet phyloseq avec :
+# Création de l’objet phyloseq regroupant :
 
-# - table d’abondances des ASVs
+## la table d’abondances des ASVs
 
-# - métadonnées des échantillons
+## les métadonnées associées aux échantillons
 
-# - taxonomie
+## la table taxonomique issue de l’assignation
 
-# je retire l’échantillon “Mock” qui servait de témoin
+# Suppression de l’échantillon témoin “Mock” pour les analyses écologiques ultérieures
 
 ``` r
 ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE), 
@@ -726,20 +811,19 @@ ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE),
 ps <- prune_samples(sample_names(ps) != "Mock", ps) # Remove mock sample
 ```
 
-# Crée un objet DNAStringSet avec les séquences des ASVs
+# Création d’un objet DNAStringSet avec les séquences des ASVs
 
-# Donne comme noms aux séquences leurs noms actuels (longues séquences nucléotidiques)
+# Attribution des noms de séquences : les ASVs sont nommés avec leurs séquences nucléotidiques complètes
 
-# Ajoute ces séquences à l’objet phyloseq (fusionne tables + séquences)
+# Ajout de ces séquences à l’objet phyloseq (fusion des données et des séquences)
 
-# Renomme les ASVs avec des IDs courts et lisibles (ASV1, ASV2, …)
+# Renommage des ASVs avec des identifiants courts et lisibles (ASV1, ASV2, …)
 
-# Affiche l’objet phyloseq (résumé de sa structure : nb échantillons, ASVs, taxons…)
+# Affichage de l’objet phyloseq (résumé : nombre d’échantillons, d’ASVs, de taxons, etc.)
 
-\#Les séquences brutes sont trop longues pour servir de noms → peu
-lisibles dans les graphiques ou les tableaux. \#En les renommant ASV1,
-ASV2, … je simplifi l’affichage, tout en conservant les séquences dans
-l’objet si besoin pour alignement ou phylogénie.
+# Les séquences brutes étant trop longues pour servir de noms, leur remplacement par des IDs courts facilite les affichages,
+
+# tout en conservant les séquences si besoin pour l’alignement ou la phylogénie.
 
 ``` r
 dna <- Biostrings::DNAStringSet(taxa_names(ps))
@@ -755,12 +839,17 @@ ps
     ## tax_table()   Taxonomy Table:    [ 232 taxa by 7 taxonomic ranks ]
     ## refseq()      DNAStringSet:      [ 232 reference sequences ]
 
-# Trace la diversité alpha en fonction du jour d’échantillonnage
+# Tracé de la diversité alpha en fonction du jour d’échantillonnage
 
-\#ps, objet phyloseq \#x = “Day”variable en abscisse = jour \#measures =
-c(“Shannon”,“Simpson”), \#indices de diversité alpha calculés \#ce
-graphique me montre comment la diversité microbienne évolue avec le
-temps (Day) et selon la période définie (When = Early vs Late).
+# ps : objet phyloseq utilisé comme source de données
+
+# x = “Day” : la variable Day est représentée en abscisse
+
+# measures = c(“Shannon”, “Simpson”) : indices de diversité alpha calculés et affichés
+
+# Le graphique permet de visualiser l’évolution de la diversité microbienne au cours du temps
+
+# et d’observer les différences selon la variable When (Early vs Late).
 
 ``` r
 plot_richness(ps, x="Day", measures=c("Shannon", "Simpson"), color="When")
@@ -775,17 +864,13 @@ plot_richness(ps, x="Day", measures=c("Shannon", "Simpson"), color="When")
 
 ![](osman-dada2_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
-# Met la table d’abondances au format “proportions” (abondances relatives par échantillon)
+# Transformation des abondances en proportions (abondances relatives par échantillon)
 
-# Chaque ligne (échantillon) est divisée par sa somme → somme = 1
+# Chaque échantillon est normalisé de sorte que la somme de ses abondances soit égale à 1
 
-# Réalise une ordination NMDS en distance de Bray–Curtis sur les abondances relatives
+# Réalisation d’une ordination NMDS basée sur la distance de Bray–Curtis
 
-ord.nmds.bray \<- ordinate(ps.prop, method = “NMDS”, distance = “bray”)
-\# Couleurs par When (Early/Late), formes par Gender, par ex.
-plot_ordination(ps.prop, ord.nmds.bray, color = “When”, shape =
-“Gender”) + geom_point(size = 3) + labs(title = “NMDS (Bray–Curtis) sur
-abondances relatives”)
+# à partir des abondances relatives
 
 ``` r
 # Transform data to proportions as appropriate for Bray-Curtis distances
@@ -794,36 +879,40 @@ ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance="bray")
 ```
 
     ## Run 0 stress 0.08043117 
-    ## Run 1 stress 0.09477198 
-    ## Run 2 stress 0.09477202 
-    ## Run 3 stress 0.1010631 
-    ## Run 4 stress 0.08616061 
-    ## Run 5 stress 0.08043117 
-    ## ... Procrustes: rmse 2.496718e-06  max resid 7.882519e-06 
-    ## ... Similar to previous best
-    ## Run 6 stress 0.08043117 
-    ## ... Procrustes: rmse 2.769505e-06  max resid 7.133053e-06 
-    ## ... Similar to previous best
-    ## Run 7 stress 0.08616061 
-    ## Run 8 stress 0.1010631 
-    ## Run 9 stress 0.08076337 
-    ## ... Procrustes: rmse 0.01051531  max resid 0.03236449 
-    ## Run 10 stress 0.09477231 
-    ## Run 11 stress 0.1212044 
-    ## Run 12 stress 0.08616061 
-    ## Run 13 stress 0.1228545 
-    ## Run 14 stress 0.0807634 
-    ## ... Procrustes: rmse 0.01055352  max resid 0.03249011 
-    ## Run 15 stress 0.08043116 
+    ## Run 1 stress 0.08076338 
+    ## ... Procrustes: rmse 0.01053691  max resid 0.03243516 
+    ## Run 2 stress 0.08076337 
+    ## ... Procrustes: rmse 0.01049307  max resid 0.03229211 
+    ## Run 3 stress 0.08076338 
+    ## ... Procrustes: rmse 0.01053643  max resid 0.03243347 
+    ## Run 4 stress 0.09477226 
+    ## Run 5 stress 0.09477216 
+    ## Run 6 stress 0.08076337 
+    ## ... Procrustes: rmse 0.01051955  max resid 0.03237816 
+    ## Run 7 stress 0.09477222 
+    ## Run 8 stress 0.08076339 
+    ## ... Procrustes: rmse 0.01054728  max resid 0.03246868 
+    ## Run 9 stress 0.1010632 
+    ## Run 10 stress 0.08616061 
+    ## Run 11 stress 0.08043116 
     ## ... New best solution
-    ## ... Procrustes: rmse 7.168389e-07  max resid 1.427643e-06 
+    ## ... Procrustes: rmse 7.167003e-07  max resid 1.206633e-06 
     ## ... Similar to previous best
-    ## Run 16 stress 0.1228545 
-    ## Run 17 stress 0.08616061 
-    ## Run 18 stress 0.1228545 
-    ## Run 19 stress 0.08616061 
-    ## Run 20 stress 0.1228545 
-    ## *** Best solution repeated 1 times
+    ## Run 12 stress 0.08076338 
+    ## ... Procrustes: rmse 0.01052799  max resid 0.0324057 
+    ## Run 13 stress 0.08616061 
+    ## Run 14 stress 0.08076337 
+    ## ... Procrustes: rmse 0.01050228  max resid 0.03232191 
+    ## Run 15 stress 0.1228545 
+    ## Run 16 stress 0.08043118 
+    ## ... Procrustes: rmse 1.408061e-05  max resid 3.191187e-05 
+    ## ... Similar to previous best
+    ## Run 17 stress 0.08076339 
+    ## ... Procrustes: rmse 0.01054435  max resid 0.03245889 
+    ## Run 18 stress 0.09477207 
+    ## Run 19 stress 0.0947719 
+    ## Run 20 stress 0.09477201 
+    ## *** Best solution repeated 2 times
 
 # Trace l’ordination NMDS calculée précédemment
 
