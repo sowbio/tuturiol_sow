@@ -5,23 +5,23 @@ output: github_document
 ```{r}
 ```
 
- Chargement du package dada2
+ Le chargement du package dada2
 # Ce package est utilisé pour analyser les séquences d’ADN issues du séquençage haut débit (NGS),
 # notamment celles du gène 16S dans ce travail. Il permet de filtrer, corriger, assembler
 # et classifier les séquences afin d’obtenir des ASVs (Amplicon Sequence Variants)
 # avec une meilleure précision que les méthodes traditionnelles.
 # Chargement du package dada2
+
 ```{r}
 library(dada2)
 ```
 
-
 # Vérification de la version du package dada2 installée
 packageVersion("dada2")
+
 ```{r}
 library(dada2); packageVersion("dada2")
 ```
-
 
 # Définition du chemin où se trouvent mes fichiers fastq (les données brutes de séquençage Illumina)
 # Ici, le chemin est "~/MiSeq_SOP" : 
@@ -33,8 +33,6 @@ setwd("/home/rstudio/tuturiol_sow")
 path <- "~/MiSeq_SOP" # CHANGE ME to the directory containing the fastq files after unzipping.
 list.files(path)
 ```
-
-
 
 
 # Les fichiers FASTQ forward et reverse suivent un format de nommage standard :
@@ -68,6 +66,7 @@ sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
 # Ici, on affiche les graphiques de qualité pour les deux premiers fichiers FASTQ "Forward".
 # Cette analyse permet de comparer la dégradation de la qualité en fin de lecture
 # et d’ajuster les paramètres de trimming en conséquence.
+
 ```{r}
 plotQualityProfile(fnFs[1:2])
 ```
@@ -78,6 +77,7 @@ plotQualityProfile(fnFs[1:2])
 # Comme pour les reads Forward, on inspecte ici la qualité des deux premiers fichiers FASTQ "Reverse".
 # Cette analyse permet de comparer la dégradation de la qualité en fin de lecture
 # et d’ajuster les paramètres de trimming en conséquence.
+
 ```{r}
 plotQualityProfile(fnRs[1:2])
 ```
@@ -131,6 +131,7 @@ errF <- learnErrors(filtFs, multithread=TRUE)
 # Apprentissage du modèle d’erreurs pour les lectures Reverse filtrées
 # Comme pour les reads Forward, dada2 estime ici les erreurs spécifiques aux données Reverse,
 # ce qui permettra une correction plus fiable des séquences lors de l’inférence des ASVs.
+
 ```{r}
 errR <- learnErrors(filtRs, multithread=TRUE)
 ```
@@ -139,6 +140,7 @@ errR <- learnErrors(filtRs, multithread=TRUE)
 # Visualisation du modèle d’erreurs des lectures Forward
 # Cette représentation permet de vérifier si le modèle d’erreur estimé
 # correspond bien aux tendances attendues (en fonction des scores de qualité).
+
 ```{r}
 plotErrors(errF, nominalQ=TRUE)
 ```
