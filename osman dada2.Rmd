@@ -283,27 +283,24 @@ download.file("https://zenodo.org/records/1172783/files/silva_species_assignment
 taxa <- assignTaxonomy(seqtab.nochim, "~/tax/silva_nr_v132_train_set.fa.gz", multithread=TRUE)
 ```
 
-
 # Ajout de l’assignation taxonomique au niveau espèce
 # On utilise ici le fichier de référence “silva_species_assignment_v132.fa.gz”
 # contenant des séquences annotées au niveau espèce, afin de compléter
 # la classification taxonomique lorsque cela est possible.
+
 ```{r}
 taxa <- addSpecies(taxa, "~/silva_species_assignment_v132.fa.gz")
 ```
 
-
-
 # Préparation d’une version affichable de la table taxonomique
 # On supprime les noms de lignes (séquences ASVs) pour faciliter la lecture
 # et afficher un aperçu clair des classifications taxonomiques obtenues.
+
 ```{r}
 taxa.print <- taxa # Removing sequence rownames for display only
 rownames(taxa.print) <- NULL
 head(taxa.print)
 ```
-
-
 
 # Chargement du package DECIPHER
 # Ce package est dédié à l’analyse de séquences ADN/ARN, notamment pour l’alignement
@@ -316,7 +313,6 @@ packageVersion("DECIPHER")
 ```{r}
 library(DECIPHER); packageVersion("DECIPHER")
 ```
-
 
 
 # Création d’un objet contenant les séquences ASVs au format DNAStringSet
@@ -362,8 +358,6 @@ taxid <- t(sapply(ids, function(x) {
 }))
 colnames(taxid) <- ranks; rownames(taxid) <- getSequences(seqtab.nochim)
 ```
-
-
 
 # Sélection des ASVs présents dans l’échantillon “Mock”
 # On conserve uniquement les ASVs avec une abondance > 0,
@@ -519,6 +513,7 @@ plot_ordination(ps.prop, ord.nmds.bray, color="When", title="Bray NMDS")
 # Garde uniquement les 20 ASVs les plus abondant
 # Trace un barplot empilé par échantillon (x=Day), avec les familles en couleurs
 # et facettes séparées selon la variable "When" (Early vs Late)
+
 ```{r}
 top20 <- names(sort(taxa_sums(ps), decreasing=TRUE))[1:20]
 ps.top20 <- transform_sample_counts(ps, function(OTU) OTU/sum(OTU))

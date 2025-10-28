@@ -1,8 +1,8 @@
 R Notebook
 ================
 
-Chargement du package dada2 \# Ce package est utilisé pour analyser les
-séquences d’ADN issues du séquençage haut débit (NGS), \# notamment
+Le chargement du package dada2 \# Ce package est utilisé pour analyser
+les séquences d’ADN issues du séquençage haut débit (NGS), \# notamment
 celles du gène 16S dans ce travail. Il permet de filtrer, corriger,
 assembler \# et classifier les séquences afin d’obtenir des ASVs
 (Amplicon Sequence Variants) \# avec une meilleure précision que les
@@ -653,7 +653,7 @@ ids <- IdTaxa(dna, trainingSet, strand="top", processors=NULL, verbose=TRUE) # u
 
     ## ================================================================================
     ## 
-    ## Time difference of 144.55 secs
+    ## Time difference of 145.73 secs
 
 ``` r
 ranks <- c("domain", "phylum", "class", "order", "family", "genus", "species") # ranks of interest
@@ -879,39 +879,39 @@ ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance="bray")
 ```
 
     ## Run 0 stress 0.08043117 
-    ## Run 1 stress 0.1228545 
-    ## Run 2 stress 0.3744262 
-    ## Run 3 stress 0.08616061 
-    ## Run 4 stress 0.1262109 
-    ## Run 5 stress 0.08076339 
-    ## ... Procrustes: rmse 0.01054265  max resid 0.03245375 
-    ## Run 6 stress 0.08616061 
-    ## Run 7 stress 0.08043117 
-    ## ... Procrustes: rmse 3.672414e-06  max resid 1.135775e-05 
+    ## Run 1 stress 0.08616061 
+    ## Run 2 stress 0.0807634 
+    ## ... Procrustes: rmse 0.01056848  max resid 0.03253804 
+    ## Run 3 stress 0.1228545 
+    ## Run 4 stress 0.08076339 
+    ## ... Procrustes: rmse 0.01055071  max resid 0.03247997 
+    ## Run 5 stress 0.08076338 
+    ## ... Procrustes: rmse 0.01053205  max resid 0.03241955 
+    ## Run 6 stress 0.0807634 
+    ## ... Procrustes: rmse 0.0105532  max resid 0.03248857 
+    ## Run 7 stress 0.08616061 
+    ## Run 8 stress 0.08616061 
+    ## Run 9 stress 0.1212044 
+    ## Run 10 stress 0.08616061 
+    ## Run 11 stress 0.1010633 
+    ## Run 12 stress 0.08076338 
+    ## ... Procrustes: rmse 0.01053993  max resid 0.03244493 
+    ## Run 13 stress 0.08076341 
+    ## ... Procrustes: rmse 0.01053776  max resid 0.03243656 
+    ## Run 14 stress 0.1228545 
+    ## Run 15 stress 0.08616061 
+    ## Run 16 stress 0.08043117 
+    ## ... Procrustes: rmse 5.928874e-06  max resid 1.415238e-05 
     ## ... Similar to previous best
-    ## Run 8 stress 0.1212044 
-    ## Run 9 stress 0.08076337 
-    ## ... Procrustes: rmse 0.01049807  max resid 0.03230801 
-    ## Run 10 stress 0.08076337 
-    ## ... Procrustes: rmse 0.01049153  max resid 0.03228703 
-    ## Run 11 stress 0.08076337 
-    ## ... Procrustes: rmse 0.0105163  max resid 0.03236809 
-    ## Run 12 stress 0.08076339 
-    ## ... Procrustes: rmse 0.01055286  max resid 0.03248716 
-    ## Run 13 stress 0.08616061 
-    ## Run 14 stress 0.08076338 
-    ## ... Procrustes: rmse 0.0105308  max resid 0.03241542 
-    ## Run 15 stress 0.08076341 
-    ## ... Procrustes: rmse 0.01056338  max resid 0.03252182 
-    ## Run 16 stress 0.08076336 
-    ## ... Procrustes: rmse 0.01047006  max resid 0.03221899 
-    ## Run 17 stress 0.3651166 
-    ## Run 18 stress 0.08076337 
-    ## ... Procrustes: rmse 0.01049976  max resid 0.03231406 
-    ## Run 19 stress 0.1327107 
-    ## Run 20 stress 0.08076337 
-    ## ... Procrustes: rmse 0.01049619  max resid 0.03230356 
-    ## *** Best solution repeated 1 times
+    ## Run 17 stress 0.08076338 
+    ## ... Procrustes: rmse 0.01053126  max resid 0.03241668 
+    ## Run 18 stress 0.0807634 
+    ## ... Procrustes: rmse 0.01055792  max resid 0.03250329 
+    ## Run 19 stress 0.1010631 
+    ## Run 20 stress 0.08043117 
+    ## ... Procrustes: rmse 1.966454e-06  max resid 5.103272e-06 
+    ## ... Similar to previous best
+    ## *** Best solution repeated 2 times
 
 # Trace l’ordination NMDS calculée précédemment
 
