@@ -653,7 +653,7 @@ ids <- IdTaxa(dna, trainingSet, strand="top", processors=NULL, verbose=TRUE) # u
 
     ## ================================================================================
     ## 
-    ## Time difference of 145.73 secs
+    ## Time difference of 135.87 secs
 
 ``` r
 ranks <- c("domain", "phylum", "class", "order", "family", "genus", "species") # ranks of interest
@@ -879,39 +879,36 @@ ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance="bray")
 ```
 
     ## Run 0 stress 0.08043117 
-    ## Run 1 stress 0.08616061 
-    ## Run 2 stress 0.0807634 
-    ## ... Procrustes: rmse 0.01056848  max resid 0.03253804 
-    ## Run 3 stress 0.1228545 
-    ## Run 4 stress 0.08076339 
-    ## ... Procrustes: rmse 0.01055071  max resid 0.03247997 
-    ## Run 5 stress 0.08076338 
-    ## ... Procrustes: rmse 0.01053205  max resid 0.03241955 
-    ## Run 6 stress 0.0807634 
-    ## ... Procrustes: rmse 0.0105532  max resid 0.03248857 
-    ## Run 7 stress 0.08616061 
-    ## Run 8 stress 0.08616061 
+    ## Run 1 stress 0.08076339 
+    ## ... Procrustes: rmse 0.01054832  max resid 0.03247224 
+    ## Run 2 stress 0.08616061 
+    ## Run 3 stress 0.09477225 
+    ## Run 4 stress 0.08076341 
+    ## ... Procrustes: rmse 0.01057292  max resid 0.03255249 
+    ## Run 5 stress 0.08076337 
+    ## ... Procrustes: rmse 0.01051401  max resid 0.03236022 
+    ## Run 6 stress 0.1212044 
+    ## Run 7 stress 0.08076336 
+    ## ... Procrustes: rmse 0.01048768  max resid 0.03227454 
+    ## Run 8 stress 0.1212044 
     ## Run 9 stress 0.1212044 
-    ## Run 10 stress 0.08616061 
-    ## Run 11 stress 0.1010633 
-    ## Run 12 stress 0.08076338 
-    ## ... Procrustes: rmse 0.01053993  max resid 0.03244493 
-    ## Run 13 stress 0.08076341 
-    ## ... Procrustes: rmse 0.01053776  max resid 0.03243656 
-    ## Run 14 stress 0.1228545 
+    ## Run 10 stress 0.09477202 
+    ## Run 11 stress 0.08076344 
+    ## ... Procrustes: rmse 0.01060141  max resid 0.03264538 
+    ## Run 12 stress 0.08616061 
+    ## Run 13 stress 0.08616061 
+    ## Run 14 stress 0.08616061 
     ## Run 15 stress 0.08616061 
-    ## Run 16 stress 0.08043117 
-    ## ... Procrustes: rmse 5.928874e-06  max resid 1.415238e-05 
-    ## ... Similar to previous best
-    ## Run 17 stress 0.08076338 
-    ## ... Procrustes: rmse 0.01053126  max resid 0.03241668 
-    ## Run 18 stress 0.0807634 
-    ## ... Procrustes: rmse 0.01055792  max resid 0.03250329 
-    ## Run 19 stress 0.1010631 
-    ## Run 20 stress 0.08043117 
-    ## ... Procrustes: rmse 1.966454e-06  max resid 5.103272e-06 
-    ## ... Similar to previous best
-    ## *** Best solution repeated 2 times
+    ## Run 16 stress 0.09477204 
+    ## Run 17 stress 0.1212044 
+    ## Run 18 stress 0.09477209 
+    ## Run 19 stress 0.0807634 
+    ## ... Procrustes: rmse 0.01056908  max resid 0.03254007 
+    ## Run 20 stress 0.08076337 
+    ## ... Procrustes: rmse 0.01049755  max resid 0.03230696 
+    ## *** Best solution was not repeated -- monoMDS stopping criteria:
+    ##     18: stress ratio > sratmax
+    ##      2: scale factor of the gradient < sfgrmin
 
 # Trace l’ordination NMDS calculée précédemment
 
