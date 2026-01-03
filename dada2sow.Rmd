@@ -1,0 +1,30 @@
+---
+title: "R Notebook"
+output: github_document
+---
+
+
+```{r}
+library(dada2); packageVersion("dada2")
+```
+```{r}
+path <- "~/sow" # CHANGE ME to the directory containing the fastq files after unzipping.
+list.files(path)
+```
+
+```{r}
+# Forward and reverse fastq filenames have format: SAMPLENAME_1.fastq and SAMPLENAME_2.fastq
+fnFs <- sort(list.files(path, pattern="_1.fastq", full.names = TRUE))
+fnRs <- sort(list.files(path, pattern="_2.fastq", full.names = TRUE))
+# Extract sample names, assuming filenames have format: SAMPLENAME_XXX.fastq
+sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
+```
+
+```{r}
+plotQualityProfile(fnFs[1:2])
+```
+
+```{r}
+plotQualityProfile(fnRs[1:2])
+```
+
